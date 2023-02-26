@@ -10,15 +10,16 @@
 # PassGit
 
 __repo__ = "https://github.com/mehrdad-mixtape/Pass_Git"
-__version__ = "v0.1.2"
+__version__ = "v0.2.0"
 
 import os, sys, base64, hashlib, getpass, json
 from json.decoder import JSONDecodeError
+from shutil import copyfile as backup
 from typing import List
 from packages import *
 from settings import *
 
-INFO = f"""
+BANNER = f"""
     {PROJECT_NAME}
     Version: {__version__}
     Source: {__repo__}"""
@@ -64,12 +65,17 @@ def main(argv: List[str]) -> None:
 
     # I used argv!, goodbye argparse!
     if argv[1] == '-n' or argv[1] == '--new':
-        # TODO Check the home dir if github_passwd.json had been existed, Show the Warning!
+        # .github_passwd.json exist but argv include -n
+        if f"{PASSWD_FILE}" in os.listdir(f"{os.path.expanduser('~')}/"):
+            pprint(f"[*] {WARNING}. {passwd_path} exist on your home dir!")
+            pprint(f"[*] {WARNING}. If you continue this operation your all Classic-Github-Token(passwd) will be [red]remove[/red]!")
+            pprint(f"[*] {WARNING}. Please make backup with -b --backup and run -n --new again")
+            pprint(f"[*] {DEBUG}. Press [cyan]Ctrl+C[/cyan] to exit, or Press [yellow]Enter[/yellow] to continue ", end='')
+            input()
+
         aes = AESCipher(getpass.getpass('[*] Give me your key: '))
         clear_passwd = getpass.getpass('[*] Give me your new Classic-Github-Token(passwd): ')
-        if f"{PASSWD_FILE}" in os.listdir(f"{os.path.expanduser('~')}/"):
-            pprint(f"[*] {WARNING}. Please use -n or --new to create the {passwd_path}")
-            sys.exit()
+
         with open(passwd_path, mode='w') as file:
             cipher_passwd = {
                 1: aes.encrypt(clear_passwd).decode('utf-8')
@@ -105,6 +111,11 @@ def main(argv: List[str]) -> None:
                     pprint(f"{k}: {v}")
             except JSONDecodeError:
                 pprint(f"[*] {ERROR}. {PASSWD_FILE} is corrupted! {OPTIONS}")
+    
+    elif argv[1] == '-b' or argv[1] == '--backup':
+        backup(passwd_path, passwd_path + '.bkup')
+        pprint(f"[*] {INFO}. Backup created {passwd_path} --> {passwd_path}.bkup")
+
 
     # $ passgit <1-20>
     elif argv[1] in ' '.join(map(str, [i for i in range(1, MAX_PASSWD + 1)])):
@@ -116,7 +127,7 @@ def main(argv: List[str]) -> None:
             copy(clear_passwd)
             pprint(f"[*] {INFO}. Classic-Github-Token(passwd) copied on clipboard!")
     else:
-        pprint(INFO)
+        pprint(BANNER)
         pprint(OPTIONS)
 
 if __name__ == '__main__':
