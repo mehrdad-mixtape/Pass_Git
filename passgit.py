@@ -55,7 +55,7 @@ class AESCipher(object):
 def main(argv: List[str]) -> None:
     passwd_path = f"{os.path.expanduser('~')}/{PASSWD_FILE}"
     if len(argv) < 2:
-        pprint(INFO)
+        pprint(BANNER)
         pprint(OPTIONS)
         sys.exit()
     
@@ -115,7 +115,6 @@ def main(argv: List[str]) -> None:
     elif argv[1] == '-b' or argv[1] == '--backup':
         backup(passwd_path, passwd_path + '.bkup')
         pprint(f"[*] {INFO}. Backup created {passwd_path} --> {passwd_path}.bkup")
-
 
     # $ passgit <1-20>
     elif argv[1] in ' '.join(map(str, [i for i in range(1, MAX_PASSWD + 1)])):
