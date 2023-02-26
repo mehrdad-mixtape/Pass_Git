@@ -26,6 +26,8 @@ Helps:
         $ passgit -a
     [bold][cyan]-d --dump[/cyan][/bold]: Dump all passwd [yellow]<{PASSWD_FILE}>[/yellow]
         $ passgit -d
+    [bold][yellow]-b --backup[/yellow][/bold]: Make backup from [yellow]<{PASSWD_FILE}>.bkup[/yellow] on home directory
+        $ passgit -b
     [bold][purple]passgit <1-{MAX_PASSWD}>[/purple][/bold]: Give you your decrypted passwd by index number between 1 and {MAX_PASSWD}
         $ passgit 1 // Give your the first stored passwd in [yellow]<{PASSWD_FILE}>[/yellow]
 """
