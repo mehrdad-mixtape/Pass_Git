@@ -10,7 +10,7 @@
 # PassGit
 
 __repo__ = "https://github.com/mehrdad-mixtape/Pass_Git"
-__version__ = "v1.0.0"
+__version__ = "v1.0.0-[red]beta[/red]"
 
 from packages import *
 
