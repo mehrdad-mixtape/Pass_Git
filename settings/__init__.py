@@ -13,7 +13,7 @@ ALGO = '[purple]A[/purple][cyan]E[/cyan][yellow]S[/yellow]'
 
 CGT = '[dark_orange]Classic-Github-Token(passwd)[/dark_orange]'
 
-OPTIONS = f"""
+HELP = f"""
 Intro:
     Store your {CGT} in [blue]Encrypted[/blue] format on your local system!
     [green]Decrypt[/green] your {CGT} with your [red]key[/red]
@@ -28,6 +28,6 @@ Helps:
         $ passgit -d
     [bold][yellow]-b --backup[/yellow][/bold]: Make backup from [yellow]<{PASSWD_FILE}>.bkup[/yellow] on home directory
         $ passgit -b
-    [bold][purple]passgit <1-{MAX_PASSWD}>[/purple][/bold]: Give you your decrypted passwd by index number between 1 and {MAX_PASSWD}
-        $ passgit 1 // Give your the first stored passwd in [yellow]<{PASSWD_FILE}>[/yellow]
+    [bold][purple]passgit -g --give <1-{MAX_PASSWD}>[/purple][/bold]: Give you your decrypted passwd by index number between 1 and {MAX_PASSWD}
+        $ passgit -g 1 // Give your the first stored passwd in [yellow]<{PASSWD_FILE}>[/yellow]
 """
