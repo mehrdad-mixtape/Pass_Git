@@ -1,7 +1,7 @@
 import os, sys, base64, hashlib, getpass, json
 from json.decoder import JSONDecodeError
 from shutil import copyfile as backup, move as rename
-from typing import List, Callable, Any, Dict, NewType
+from typing import List, Callable, Any, Dict, Tuple
 from settings import *
 
 PASSWD_PATH = f"{os.path.expanduser('~')}/{PASSWD_FILE}"
@@ -80,40 +80,31 @@ class AESCipher(object):
         return s[:-ord(s[len(s)-1:])]
 
 class Options:
+    __slots__ = "__option_list", "__option_method"
     def __init__(self):
         self.__option_list: List[str] = []
-        self.__option_method: Dict[str, str] = {}
+        self.__option_method: Dict[str, Tuple[Callable, bool, int]] = {}
 
     def __str__(self):
         return f"List of options: {' '.join(self.__option_list)}"
 
-    def __call__(self, *switches: str, has_args: bool=False, limit_of_args: int=2):
+    def __call__(self, *switches: str, has_input: bool=False):
         """
             switches: start with - or --.
-            has_args: maybe the switches include the argument after them.
-            limit_of_args: numbers of arguments after switches and depends on has_args.
+            has_input: maybe the switches include the argument after them.
+            limit_of_args: numbers of arguments after switches and depends on has_input.
         """
         self.__option_list.extend(switches)
         def __decorator__(func: Callable) -> Callable[[None], None]:
-            self[func.__name__] = ' '.join(switches)
+            for sw in switches:
+                self[sw] = func.__name__
+
             @exception_handler(IndexError, cause=f"Not enough arguments after {' '.join(switches)}")
-            def __wrapper__() -> Any:
-                flag = True
-                # for sw in switches:
-                    # if sys.argv[1] == sw:
-                for i, sw in enumerate(sys.argv):
-                    if sw in switches:
-                        if not has_args:
-                            return func()
-                        else:
-                            return func(sys.argv[i + 1])
-                    else:
-                        flag = False
+            def __wrapper__(loc_of_arg) -> Any:
+                if not has_input:
+                    return func()
                 else:
-                    goodbye(
-                        (len(sys.argv) < limit_of_args) and flag,
-                        cause=f"Numbers of arguments={len(sys.argv)} but {limit_of_args=}, They should be Equal ({' '.join(switches)})"
-                    )
+                    return func(sys.argv[loc_of_arg])
 
             return __wrapper__
         return __decorator__
@@ -122,7 +113,7 @@ class Options:
         self.__option_method[attr] = value
 
     def __getitem__(self, attr) -> Any:
-        return self.__option_list[attr]
+        return self.__option_method[attr]
 
     @property
     def option_list(self) -> List[str]:
