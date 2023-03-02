@@ -6,6 +6,7 @@ ERROR = '[red]Error[/red]'
 PROJECT_NAME = '[blink][dark_orange]Passgit[/dark_orange][/blink]'
 
 PASSWD_FILE = ".github_passwd.json"
+PASSWD_FILE_BKUP = f"{PASSWD_FILE}.bkup"
 
 MAX_PASSWD = 20
 
@@ -28,6 +29,12 @@ Helps:
         $ passgit -d
     [bold][yellow]-b --backup[/yellow][/bold]: Make backup from [yellow]<{PASSWD_FILE}>.bkup[/yellow] on home directory
         $ passgit -b
+    [bold][pink]-r --restore[/pink][/bold]: Restore your backup from [yellow]<{PASSWD_FILE}>.bkup[/yellow] to [yellow]<{PASSWD_FILE}>[/yellow]
+        $ passgit -r
+    [bold][medium_violet_red]-l --list[/medium_violet_red][/bold]: Show the list of available files in your home directory
+        $ passgit -l
+    [bold][dark_orange]-h --help[/dark_orange][/bold]: Show help
+        $ passgit -h
     [bold][purple]passgit -g --give <1-{MAX_PASSWD}>[/purple][/bold]: Give you your decrypted passwd by index number between 1 and {MAX_PASSWD}
         $ passgit -g 1 // Give your the first stored passwd in [yellow]<{PASSWD_FILE}>[/yellow]
 """
