@@ -15,7 +15,7 @@ ALPHA = '-[purple]alpha[/purple]'
 STABLE = '-[green]stable[/green]'
 
 __repo__ = "https://github.com/mehrdad-mixtape/Pass_Git"
-__version__ = f"v2.0.0{STABLE}"
+__version__ = f"v2.4.1{STABLE}"
 
 from packages import *
 
@@ -96,13 +96,13 @@ def do_you_wanna_make_backup() -> None:
 @option('-r', '--restore')
 def do_you_wanna_restore_backup() -> None:
     if is_file_exist(PASSWD_FILE_BKUP):
-        os.remove(PASSWD_FILE)
+        os.remove(PASSWD_PATH)
         rename(f"{PASSWD_PATH}.bkup", PASSWD_PATH)
         pprint(f"[*] {INFO}. Backup restored {PASSWD_PATH}.bkup ❱❱❱ {PASSWD_PATH}")
     else:
         pprint(f"[*] {WARNING}. {PASSWD_PATH}.bkup don't exist on your home dir!")
 
-@option('-g', '--give', has_args=True, limit_of_args=3)
+@option('-g', '--give', has_input=True)
 def do_you_wanna_return_passwd(index) -> None:
     goodbye(
         not index.isdigit(),
@@ -128,6 +128,13 @@ def do_you_wanna_show_list_file() -> None:
 def do_you_wanna_help() -> None:
     pprint(HELP)
 
+@exception_handler(KeyError, cause='Invalid Switch, use passgit -h to show you the help')
+def manage() -> None:
+    for i, sw in enumerate(set(sys.argv)): # sys.argv converted to set to remove the duplicate switches
+        if not sw.startswith(('', '/', '-', '--')): continue # valid switches can start with `nothing` / - --
+        func = option.option_method[sw] # func is __wrapper__ in __call__ that defined in Options class
+        eval(f"{func}({i + 1})") # if switch has input, I should pass the location of input to func, if it hasn't, it will be handle in __wrapper__ with has_input
+
 @exception_handler(KeyboardInterrupt, cause=f"Ctrl+C")
 @exception_handler(JSONDecodeError, cause=f"<{PASSWD_FILE}> is corrupted!")
 @exception_handler(FileNotFoundError, cause=f"<{PASSWD_FILE}> not found! if you have backup, restore it")
@@ -137,19 +144,7 @@ def main() -> None:
         len(sys.argv) == 1,
         cause='Not to use [bold]Switches[/bold]'
     )
-    # Priority of options
-    do_you_wanna_make_new_file()
-    do_you_wanna_return_passwd()
-    do_you_wanna_add_new_passwd()
-    do_you_wanna_make_backup()
-    do_you_wanna_restore_backup()
-    do_you_wanna_show_list_file()
-    do_you_wanna_dump_passwd()
-    do_you_wanna_help()
-    goodbye(
-        sys.argv[1] not in option.option_list,
-        cause=f"Invalid Switch [bold]{sys.argv[1]}[/bold]"
-    )
+    manage()
 
 if __name__ == '__main__':
     main()
