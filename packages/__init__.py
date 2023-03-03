@@ -93,7 +93,7 @@ class Options:
         for switch, method in self.option_method.items():
             table.add_row(switch, method.__name__)
         pprint(table)
-        return ''
+        return '\r'
 
     def __call__(self, *switches: str, has_input: bool=False):
         """
