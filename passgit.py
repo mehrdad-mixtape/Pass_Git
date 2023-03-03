@@ -8,14 +8,13 @@
 
 # Python Version 3.8 or higher
 # PassGit
-# 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
 
 BETA = '-[red]alpha[/red]'
 ALPHA = '-[purple]alpha[/purple]'
 STABLE = '-[green]stable[/green]'
 
 __repo__ = "https://github.com/mehrdad-mixtape/Pass_Git"
-__version__ = f"v2.4.1{STABLE}"
+__version__ = f"v1.4.2{STABLE}"
 
 from packages import *
 
@@ -103,7 +102,8 @@ def do_you_wanna_restore_backup() -> None:
         pprint(f"[*] {WARNING}. {PASSWD_PATH}.bkup don't exist on your home dir!")
 
 @option('-g', '--give', has_input=True)
-def do_you_wanna_return_passwd(index) -> None:
+def do_you_wanna_return_passwd(index: str) -> None:
+    pprint(index, '-g')
     goodbye(
         not index.isdigit(),
         cause=f"Bad argument=({index}) after -g --give"
@@ -128,15 +128,10 @@ def do_you_wanna_show_list_file() -> None:
 def do_you_wanna_help() -> None:
     pprint(HELP)
 
-@exception_handler(KeyError, cause='Invalid Switch, use passgit -h to show you the help')
-def manage() -> None:
-    for i, sw in enumerate(set(sys.argv)): # sys.argv converted to set to remove the duplicate switches
-        if not sw.startswith(('', '/', '-', '--')): continue # valid switches can start with `nothing` / - --
-        func = option.option_method[sw] # func is __wrapper__ in __call__ that defined in Options class
-        eval(f"{func}({i + 1})") # if switch has input, I should pass the location of input to func, if it hasn't, it will be handle in __wrapper__ with has_input
-
-@exception_handler(KeyboardInterrupt, cause=f"Ctrl+C")
+@exception_handler(KeyboardInterrupt, cause="Ctrl+C")
 @exception_handler(JSONDecodeError, cause=f"<{PASSWD_FILE}> is corrupted!")
+@exception_handler(IndexError, cause="Not enough arguments")
+@exception_handler(KeyError, cause='Invalid Switch, use passgit -h to show you the help')
 @exception_handler(FileNotFoundError, cause=f"<{PASSWD_FILE}> not found! if you have backup, restore it")
 def main() -> None:
     pprint(BANNER)
@@ -144,7 +139,7 @@ def main() -> None:
         len(sys.argv) == 1,
         cause='Not to use [bold]Switches[/bold]'
     )
-    manage()
+    for _ in option.manage(): ...
 
 if __name__ == '__main__':
     main()
