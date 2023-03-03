@@ -1,7 +1,8 @@
 import os, sys, base64, hashlib, getpass, json
 from json.decoder import JSONDecodeError
+from time import sleep
 from shutil import copyfile as backup, move as rename
-from typing import List, Callable, Any, Dict, Tuple
+from typing import List, Callable, Any, Dict, Tuple, Generator
 from settings import *
 
 PASSWD_PATH = f"{os.path.expanduser('~')}/{PASSWD_FILE}"
@@ -86,7 +87,13 @@ class Options:
         self.__option_method: Dict[str, Tuple[Callable, bool, int]] = {}
 
     def __str__(self):
-        return f"List of options: {' '.join(self.__option_list)}"
+        table = Table()
+        table.add_column('Switches')
+        table.add_column('Methods')
+        for switch, method in self.option_method.items():
+            table.add_row(switch, method.__name__)
+        pprint(table)
+        return ''
 
     def __call__(self, *switches: str, has_input: bool=False):
         """
@@ -97,16 +104,7 @@ class Options:
         self.__option_list.extend(switches)
         def __decorator__(func: Callable) -> Callable[[None], None]:
             for sw in switches:
-                self[sw] = func.__name__
-
-            @exception_handler(IndexError, cause=f"Not enough arguments after {' '.join(switches)}")
-            def __wrapper__(loc_of_arg) -> Any:
-                if not has_input:
-                    return func()
-                else:
-                    return func(sys.argv[loc_of_arg])
-
-            return __wrapper__
+                self[sw] = (func, has_input)
         return __decorator__
 
     def __setitem__(self, attr, value) -> None:
@@ -114,6 +112,17 @@ class Options:
 
     def __getitem__(self, attr) -> Any:
         return self.__option_method[attr]
+
+    def manage(self) -> Generator[Any, None, None]:
+        for i, sw in enumerate(sys.argv): # sys.argv converted to set to remove the duplicate switches
+            if not sw.startswith(('-', '--')): continue # valid switches can start with - --
+            func, has_input = self.option_method[sw] # func is __wrapper__ in __call__ that defined in Options class
+            # if switch has input, I should pass the location of input to func, if it hasn't, it will be handle in __wrapper__ with has_input
+            # eval(f"{func}({i + 1})")
+            if not has_input:
+                yield func()
+            else:
+                yield func(sys.argv[i + 1].__str__())
 
     @property
     def option_list(self) -> List[str]:
