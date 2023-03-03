@@ -103,7 +103,6 @@ def do_you_wanna_restore_backup() -> None:
 
 @option('-g', '--give', has_input=True)
 def do_you_wanna_return_passwd(index: str) -> None:
-    pprint(index, '-g')
     goodbye(
         not index.isdigit(),
         cause=f"Bad argument=({index}) after -g --give"
