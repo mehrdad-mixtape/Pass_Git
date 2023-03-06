@@ -6,13 +6,11 @@ Useful Script to Store &amp; Encrypt Your Classic-GitHub-Token On your Local Sys
     - Decrypt your Classic-Github-Token(passwd) with your key
     - Encryption Algorithm is AES
 
+## Interview:
+![image](https://github.com/mehrdad-mixtape/Pass_Git/blob/master/images/index.png)
+
 ## Helps:
 ```bash
-Intro:
-    Store your Classic-Github-Token(passwd) in Encrypted format on your local system!
-    Decrypt your Classic-Github-Token(passwd) with your key
-    Encryption Algorithm is AES
-
 Helps:
     -n --new: Get your passwd and encrypt it, then will make new <.github_passwd.json> in your home directory
         $ passgit -n
