@@ -19,7 +19,7 @@ else:
     pprint = lambda *args, **kwargs: Console().print(*args, **kwargs)
 
 try:
-    from pyperclip import copy
+    from pyperclip import copy as clipboard, PyperclipException
 except ImportError:
     pprint("[*] Error. Please install pyperclip' pkg.\n$ pip3 install pyperclip")
 
@@ -38,7 +38,7 @@ def goodbye(expression: bool, cause: str='Unknown'):
 def is_file_exist(file: str) -> bool:
     return file in os.listdir(f"{os.path.expanduser('~')}/")
 
-def exception_handler(*exceptions, cause: str='', do_this: Callable=lambda: None) -> Callable[[Any], Any]:
+def exception_handler(*exceptions, cause: str='', do_this: Callable=sys.exit) -> Callable[[Any], Any]:
     def __decorator__(func: Callable) -> Callable[[Any], Any]:
         def __wrapper__(*args, **kwargs) -> Any:
             try:
@@ -49,7 +49,6 @@ def exception_handler(*exceptions, cause: str='', do_this: Callable=lambda: None
                 else:
                     pprint(f"\n[*] {err}")
                 do_this()
-                sys.exit()
             else:
                 return results
         return __wrapper__
