@@ -16,7 +16,7 @@ Helps:
         $ passgit -n
     -a --add: Add new passwd on <.github_passwd.json>, passgit support maximum 20 passwd to encrypt and store
         $ passgit -a
-    -d --dump: Dump all passwd <.github_passwd.json>
+    -d --dump: Dump all passwd from <.github_passwd.json>
         $ passgit -d
     -b --backup: Make backup from <.github_passwd.json>.bkup on home directory
         $ passgit -b
