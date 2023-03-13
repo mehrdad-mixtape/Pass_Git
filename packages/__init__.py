@@ -29,9 +29,9 @@ try:
 except ImportError as E:
     pprint("[*] Error. Please install 'pycryptodome' pkg.\n$ pip3 install pycryptodome")
 
-def goodbye(expression: bool, cause: str='Unknown'):
+def goodbye(expression: bool, cause: str='Unknown', silent: bool=False):
     if expression:
-        pprint(HELP)
+        if not silent: pprint(HELP)
         pprint(f"[*] {ERROR}. {cause}")
         sys.exit()
 
@@ -94,7 +94,11 @@ class Options:
         pprint(table)
         return '\r'
 
-    def __call__(self, *switches: str, has_input: bool=False):
+    def __call__(
+            self, *switches: str,
+            has_input: bool=False,
+            type_of_input: type=None
+        ):
         """
             switches: start with - or --.
             has_input: maybe the switches include the argument after them.
@@ -103,7 +107,7 @@ class Options:
         self.__option_list.extend(switches)
         def __decorator__(func: Callable) -> Callable[[None], None]:
             for sw in switches:
-                self[sw] = (func, has_input)
+                self[sw] = (func, has_input, type_of_input)
         return __decorator__
 
     def __setitem__(self, attr, value) -> None:
@@ -115,13 +119,27 @@ class Options:
     def manage(self) -> Generator[Any, None, None]:
         for i, sw in enumerate(sys.argv): # sys.argv converted to set to remove the duplicate switches
             if not sw.startswith(('-', '--')): continue # valid switches can start with - --
-            func, has_input = self.option_method[sw] # func is __wrapper__ in __call__ that defined in Options class
+            func, has_input, type_of_input= self.option_method[sw] # func is __wrapper__ in __call__ that defined in Options class
             # if switch has input, I should pass the location of input to func, if it hasn't, it will be handle in __wrapper__ with has_input
             # eval(f"{func}({i + 1})")
             if not has_input:
                 yield func()
             else:
-                yield func(sys.argv[i + 1].__str__())
+                arg_input = sys.argv[i + 1].__str__()
+                goodbye(
+                    type_of_input is None,
+                    cause=f"Get type-of-arguments=({arg_input}) after {sw}",
+                    silent=True
+                )
+                try:
+                    arg_input = type_of_input(arg_input)
+                except ValueError:
+                    goodbye(
+                        True,
+                        cause=f"Gave bad-argument=({arg_input}) after {sw}",
+                        silent=True
+                    )
+                yield func(arg_input)
 
     @property
     def option_list(self) -> List[str]:
