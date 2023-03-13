@@ -14,7 +14,7 @@ ALPHA = '-[purple]alpha[/purple]'
 STABLE = '-[green]stable[/green]'
 
 __repo__ = "https://github.com/mehrdad-mixtape/Pass_Git"
-__version__ = f"v1.4.4{STABLE}"
+__version__ = f"v1.4.5{ALPHA}"
 
 from packages import *
 
@@ -30,7 +30,7 @@ option = Options()
 def do_you_wanna_make_new_file() -> None:
     if is_file_exist(PASSWD_FILE):
         pprint(
-            f"[*] {WARNING}. {PASSWD_PATH} exist on your home dir!",
+            f"[*] {WARNING}. {PASSWD_FILE} exist on your home dir!",
             f"\n  If you continue this operation your all Classic-Github-Token(passwd) will be [red]remove[/red]!",
             f"\n  Please make sure you have [cyan]backup[/cyan] and try again"
         )
@@ -95,6 +95,13 @@ def do_you_wanna_make_backup() -> None:
 @option('-r', '--restore')
 def do_you_wanna_restore_backup() -> None:
     if is_file_exist(PASSWD_FILE_BKUP):
+        if is_file_exist(PASSWD_FILE):
+            pprint(
+                f"[*] {WARNING}. <{PASSWD_FILE}> exist in your home dir!",
+                f"\n  If you continue this operation, <{PASSWD_FILE_BKUP}> will replace on <{PASSWD_FILE}>"
+            )
+            pprint(f"[*] {DEBUG}. Press [cyan]Ctrl+C[/cyan] to exit, or Press [yellow]Enter[/yellow] to continue ", end='')
+            input()
         os.remove(PASSWD_PATH)
         rename(f"{PASSWD_PATH}.bkup", PASSWD_PATH)
         pprint(f"[*] {INFO}. Backup restored {PASSWD_PATH}.bkup ❱❱❱ {PASSWD_PATH}")
