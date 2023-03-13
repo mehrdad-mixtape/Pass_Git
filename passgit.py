@@ -1,4 +1,4 @@
-#!/bin/python3.8
+#!/bin/python3
 # -*- coding: utf8 -*-
 
 # MIT License
@@ -101,16 +101,18 @@ def do_you_wanna_restore_backup() -> None:
     else:
         pprint(f"[*] {WARNING}. {PASSWD_PATH}.bkup don't exist on your home dir!")
 
-@option('-g', '--give', has_input=True)
+@option('-g', '--give', has_input=True, type_of_input=int)
 @exception_handler(PyperclipException, cause='Cannot forward clipboard in remote-Xsession, use -X in ssh sessions')
 def do_you_wanna_return_passwd(index: str) -> None:
-    goodbye(
-        not index.isdigit(),
-        cause=f"Bad argument=({index}) after -g --give"
-    )
     with open(PASSWD_PATH, mode='r') as file:
+        cipher_list = json.load(file)
+        goodbye(
+            index not in map(int, cipher_list.keys()),
+            cause=f"Passwd not found with index={index}, use -d --dump to see",
+            silent=True
+        )
+        cipher_passwd = cipher_list.get(index, 'null')
         aes = AESCipher(getpass.getpass('[*] (-g --give) Give me your key: '))
-        cipher_passwd = json.load(file).get(index, 'null')
         clear_passwd = aes.decrypt(cipher_passwd)
         clipboard(clear_passwd)
         pprint(f"[*] {INFO}. Classic-Github-Token(passwd) copied on clipboard!")
