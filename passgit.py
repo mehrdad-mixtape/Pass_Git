@@ -108,13 +108,13 @@ def do_you_wanna_restore_backup() -> None:
     else:
         pprint(f"[*] {WARNING}. {PASSWD_PATH}.bkup don't exist on your home dir!")
 
-@option('-g', '--give', has_input=True, type_of_input=int)
+@option('-g', '--give', has_input=True, type_of_input=str)
 @exception_handler(PyperclipException, cause='Cannot forward clipboard in remote-Xsession, use -X in ssh sessions')
 def do_you_wanna_return_passwd(index: str) -> None:
     with open(PASSWD_PATH, mode='r') as file:
         cipher_list = json.load(file)
         goodbye(
-            index not in map(int, cipher_list.keys()),
+            index not in map(type(index), cipher_list.keys()),
             cause=f"Passwd not found with index={index}, use -d --dump to see",
             silent=True
         )
