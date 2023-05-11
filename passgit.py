@@ -14,7 +14,7 @@ ALPHA = '-[purple]alpha[/purple]'
 STABLE = '-[green]stable[/green]'
 
 __repo__ = "https://github.com/mehrdad-mixtape/Pass_Git"
-__version__ = f"v1.4.5{ALPHA}"
+__version__ = f"v1.6.5{STABLE}"
 
 from packages import *
 
@@ -140,7 +140,6 @@ def do_you_wanna_help() -> None:
 @exception_handler(KeyboardInterrupt, cause="Ctrl+C")
 @exception_handler(JSONDecodeError, cause=f"<{PASSWD_FILE}> is corrupted!")
 @exception_handler(IndexError, cause="Not enough arguments")
-@exception_handler(KeyError, cause='Invalid Switch, use passgit -h to show you the help')
 @exception_handler(FileNotFoundError, cause=f"<{PASSWD_FILE}> not found! if you have backup, restore it")
 def main() -> None:
     pprint(BANNER)
@@ -148,7 +147,7 @@ def main() -> None:
         len(sys.argv) == 1,
         cause='Not to use [bold]Switches[/bold]'
     )
-    for _ in option.manage(): ...
+    for _ in option.parse(): ...
 
 if __name__ == '__main__':
     main()
