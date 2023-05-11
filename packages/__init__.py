@@ -16,7 +16,7 @@ except ImportError:
 else:
     pretty.install()
     traceback.install()
-    pprint = lambda *args, **kwargs: Console().print(*args, **kwargs)
+    pprint = lambda *args, **kwargs: Console().print(*args, **kwargs) if None not in args else ...
 
 try:
     from pyperclip import copy as clipboard, PyperclipException
@@ -31,6 +31,7 @@ except ImportError as E:
 
 def goodbye(expression: bool, cause: str='Unknown', silent: bool=False):
     if expression:
+    # assert expression
         if not silent: pprint(HELP)
         pprint(f"[*] {ERROR}. {cause}")
         sys.exit()
@@ -116,30 +117,50 @@ class Options:
     def __getitem__(self, attr) -> Any:
         return self.__option_method[attr]
 
-    def manage(self) -> Generator[Any, None, None]:
+    def parse(self) -> Generator[Any, None, None]:
         for i, sw in enumerate(sys.argv): # sys.argv converted to set to remove the duplicate switches
-            if not sw.startswith(('-', '--')): continue # valid switches can start with - --
-            func, has_input, type_of_input= self.option_method[sw] # func is __wrapper__ in __call__ that defined in Options class
+            # goodbye(sw.startswith(('+', '=', '/', '\\', '$', '#', '>', '<', '@', '!', '`', '~')))
+
+            if not sw.startswith(('-', '--')):
+                continue # valid switches can start with - --            
+            
+            # Handle the complete-switches: Example ==> --add --list --dump
+            if '--' in sw:
+                yield self.__switch_executer(sw, i)
+                continue
+            
+            # Handle the abbreviation-switches: Example ==> -a -l -d
+            # Handle the mixed abbreviation-switches: Example ==> -ald = -dal
+            for chr in sw:
+                if chr == '-': continue
+                esw = f"-{chr}" # esw = extracted_switch
+                yield self.__switch_executer(esw, i)
+
+    def __switch_executer(self, switch: str, switch_index: int) -> None:
+        try:
+            func, has_input, type_of_input = self.option_method[switch] # func is __wrapper__ in __call__ that defined in Options class
             # if switch has input, I should pass the location of input to func, if it hasn't, it will be handle in __wrapper__ with has_input
-            # eval(f"{func}({i + 1})")
-            if not has_input:
-                yield func()
-            else:
-                arg_input = sys.argv[i + 1].__str__()
+        except KeyError:
+            goodbye(True, cause=f"Invalid Switch=({switch})")
+        # eval(f"{func}({i + 1})")
+        if not has_input:
+            return func()
+        else:
+            arg_input = sys.argv[switch_index + 1].__str__()
+            goodbye(
+                type_of_input is None,
+                cause=f"Get type-of-arguments=({arg_input}) after {switch}",
+                silent=True
+            )
+            try:
+                arg_input = type_of_input(arg_input)
+            except ValueError:
                 goodbye(
-                    type_of_input is None,
-                    cause=f"Get type-of-arguments=({arg_input}) after {sw}",
+                    True,
+                    cause=f"Gave bad-argument=({arg_input}) after {switch}",
                     silent=True
                 )
-                try:
-                    arg_input = type_of_input(arg_input)
-                except ValueError:
-                    goodbye(
-                        True,
-                        cause=f"Gave bad-argument=({arg_input}) after {sw}",
-                        silent=True
-                    )
-                yield func(arg_input)
+            return func(arg_input)
 
     @property
     def option_list(self) -> List[str]:
