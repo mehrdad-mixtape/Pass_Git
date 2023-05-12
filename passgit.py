@@ -34,7 +34,7 @@ def do_you_wanna_make_new_file() -> None:
             f"\n  If you continue this operation your all Classic-Github-Token(passwd) will be [red]remove[/red]!",
             f"\n  Please make sure you have [cyan]backup[/cyan] and try again"
         )
-        pprint(f"[*] {DEBUG}. Press [cyan]Ctrl+C[/cyan] to exit, or Press [yellow]Enter[/yellow] to continue ", end='')
+        pprint(f"[*] {NOTICE}. Press [cyan]Ctrl+C[/cyan] to exit, or Press [yellow]Enter[/yellow] to continue ", end='')
         input()
 
     aes = AESCipher(getpass.getpass('[*] (-n --new) Give me your key: '))
@@ -65,7 +65,7 @@ def do_you_wanna_add_new_passwd() -> None:
     with open(PASSWD_PATH, mode='w') as file:
         json.dump(ciphers, file)
 
-    pprint(f"[*] {DEBUG}. New Classic-Github-Token(passwd) added '{PASSWD_PATH}'")
+    pprint(f"[*] {NOTICE}. New Classic-Github-Token(passwd) added '{PASSWD_PATH}'")
     pprint(f"[*] {INFO}. Do you wanna make [cyan]backup[/cyan](Y/N)? (default = N) ", end='')
     answer = input()
 
@@ -100,7 +100,7 @@ def do_you_wanna_restore_backup() -> None:
                 f"[*] {WARNING}. <{PASSWD_FILE}> exist in your home dir!",
                 f"\n  If you continue this operation, <{PASSWD_FILE_BKUP}> will replace on <{PASSWD_FILE}>"
             )
-            pprint(f"[*] {DEBUG}. Press [cyan]Ctrl+C[/cyan] to exit, or Press [yellow]Enter[/yellow] to continue ", end='')
+            pprint(f"[*] {NOTICE}. Press [cyan]Ctrl+C[/cyan] to exit, or Press [yellow]Enter[/yellow] to continue ", end='')
             input()
         os.remove(PASSWD_PATH)
         rename(f"{PASSWD_PATH}.bkup", PASSWD_PATH)

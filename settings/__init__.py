@@ -1,5 +1,5 @@
 INFO = '[green]Info[/green]'
-DEBUG = '[purple]Debug[/purple]'
+NOTICE = '[purple]Notice[/purple]'
 WARNING = '[dark_orange]Warning[/dark_orange]'
 ERROR = '[red]Error[/red]'
 
