@@ -14,12 +14,12 @@ ALPHA = '-[purple]alpha[/purple]'
 STABLE = '-[green]stable[/green]'
 
 __repo__ = "https://github.com/mehrdad-mixtape/Pass_Git"
-__version__ = f"v1.6.5{STABLE}"
+__version__ = f"v1.6.6{STABLE}"
 
 from packages import *
 
 BANNER = f"""
----===❰ [blink]{PROJECT_NAME}[/blink] ❱===---
+---===⬤  [blink]{PROJECT_NAME}[/blink] ⬤===---
     Version: {__version__}
     Source: {__repo__}
 """
