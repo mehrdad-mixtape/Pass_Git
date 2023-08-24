@@ -30,11 +30,11 @@ option = Options()
 def do_you_wanna_make_new_file() -> None:
     if is_file_exist(PASSWD_FILE):
         pprint(
-            f"[*] {WARNING}. {PASSWD_FILE} exist on your home dir!",
+            f"[{WARNING}]. {PASSWD_FILE} exist on your home dir!",
             f"\n  If you continue this operation your all Classic-Github-Token(passwd) will be [red]remove[/red]!",
             f"\n  Please make sure you have [cyan]backup[/cyan] and try again"
         )
-        pprint(f"[*] {NOTICE}. Press [cyan]Ctrl+C[/cyan] to exit, or Press [yellow]Enter[/yellow] to continue ", end='')
+        pprint(f"[{NOTICE}]. Press [cyan]Ctrl+C[/cyan] to exit, or Press [yellow]Enter[/yellow] to continue ", end='')
         input()
 
     aes = AESCipher(getpass.getpass('[*] (-n --new) Give me your key: '))
@@ -46,7 +46,7 @@ def do_you_wanna_make_new_file() -> None:
                 1: aes.encrypt(clear_passwd)
             }
             json.dump(cipher_passwd, file)
-    pprint(f"[*] {INFO}. Classic-Github-Token(passwd) stored in '{PASSWD_PATH}'")
+    pprint(f"[{INFO}]. Classic-Github-Token(passwd) stored in '{PASSWD_PATH}'")
 
 @option('-a', '--add')
 def do_you_wanna_add_new_passwd() -> None:
@@ -55,7 +55,7 @@ def do_you_wanna_add_new_passwd() -> None:
 
     index = int(list(ciphers.keys()).pop())
     if index + 1 > MAX_PASSWD:
-        pprint(f"[*] {WARNING}. Maximum support passwd is {MAX_PASSWD}!")
+        pprint(f"[{WARNING}]. Maximum support passwd is {MAX_PASSWD}!")
         sys.exit()
 
     aes = AESCipher(getpass.getpass('[*] (-a --add) Give me your key: '))
@@ -65,13 +65,13 @@ def do_you_wanna_add_new_passwd() -> None:
     with open(PASSWD_PATH, mode='w') as file:
         json.dump(ciphers, file)
 
-    pprint(f"[*] {NOTICE}. New Classic-Github-Token(passwd) added '{PASSWD_PATH}'")
-    pprint(f"[*] {INFO}. Do you wanna make [cyan]backup[/cyan](Y/N)? (default = N) ", end='')
+    pprint(f"[{NOTICE}]. New Classic-Github-Token(passwd) added '{PASSWD_PATH}'")
+    pprint(f"[{INFO}]. Do you wanna make [cyan]backup[/cyan](Y/N)? (default = N) ", end='')
     answer = input()
 
     if answer == 'y' or answer == 'Y':
         backup(PASSWD_PATH, f"{PASSWD_PATH}.bkup")
-        pprint(f"[*] {INFO}. Backup created {PASSWD_PATH} ❱❱❱ {PASSWD_PATH}.bkup")
+        pprint(f"[{INFO}]. Backup created {PASSWD_PATH} ❱❱❱ {PASSWD_PATH}.bkup")
 
 @option('-d', '--dump')
 def do_you_wanna_dump_passwd() -> None:
@@ -88,25 +88,25 @@ def do_you_wanna_dump_passwd() -> None:
 def do_you_wanna_make_backup() -> None:
     if not is_file_exist(PASSWD_FILE_BKUP):
         backup(PASSWD_PATH, PASSWD_PATH + '.bkup')
-        pprint(f"[*] {INFO}. Backup created {PASSWD_PATH} ❱❱❱ {PASSWD_PATH}.bkup")
+        pprint(f"[{INFO}]. Backup created {PASSWD_PATH} ❱❱❱ {PASSWD_PATH}.bkup")
     else:
-        pprint(f"[*] {WARNING}. {PASSWD_PATH}.bkup exist on your home dir!")
+        pprint(f"[{WARNING}]. {PASSWD_PATH}.bkup exist on your home dir!")
 
 @option('-r', '--restore')
 def do_you_wanna_restore_backup() -> None:
     if is_file_exist(PASSWD_FILE_BKUP):
         if is_file_exist(PASSWD_FILE):
             pprint(
-                f"[*] {WARNING}. <{PASSWD_FILE}> exist in your home dir!",
+                f"[{WARNING}]. <{PASSWD_FILE}> exist in your home dir!",
                 f"\n  If you continue this operation, <{PASSWD_FILE_BKUP}> will replace on <{PASSWD_FILE}>"
             )
-            pprint(f"[*] {NOTICE}. Press [cyan]Ctrl+C[/cyan] to exit, or Press [yellow]Enter[/yellow] to continue ", end='')
+            pprint(f"[{NOTICE}]. Press [cyan]Ctrl+C[/cyan] to exit, or Press [yellow]Enter[/yellow] to continue ", end='')
             input()
         os.remove(PASSWD_PATH)
         rename(f"{PASSWD_PATH}.bkup", PASSWD_PATH)
-        pprint(f"[*] {INFO}. Backup restored {PASSWD_PATH}.bkup ❱❱❱ {PASSWD_PATH}")
+        pprint(f"[{INFO}]. Backup restored {PASSWD_PATH}.bkup ❱❱❱ {PASSWD_PATH}")
     else:
-        pprint(f"[*] {WARNING}. {PASSWD_PATH}.bkup don't exist on your home dir!")
+        pprint(f"[{WARNING}]. {PASSWD_PATH}.bkup don't exist on your home dir!")
 
 @option('-g', '--give', has_input=True, type_of_input=str)
 @exception_handler(PyperclipException, cause='Cannot forward clipboard in remote-Xsession, use -X in ssh sessions')
@@ -122,7 +122,7 @@ def do_you_wanna_return_passwd(index: str) -> None:
         aes = AESCipher(getpass.getpass('[*] (-g --give) Give me your key: '))
         clear_passwd = aes.decrypt(cipher_passwd)
         clipboard(clear_passwd)
-        pprint(f"[*] {INFO}. Classic-Github-Token(passwd) copied on clipboard!")
+        pprint(f"[{INFO}]. Classic-Github-Token(passwd) copied on clipboard!")
 
 @option('-l', '--list')
 def do_you_wanna_show_list_file() -> None:

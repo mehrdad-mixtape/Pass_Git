@@ -12,7 +12,7 @@ try:
     from rich.table import Table
     from rich import pretty, traceback
 except ImportError:
-    print("[*] Error. Please install 'rich' pkg.\n$ pip3 install rich")
+    print("[Error]. Please install 'rich' pkg.\n$ pip3 install rich")
 else:
     pretty.install()
     traceback.install()
@@ -21,19 +21,19 @@ else:
 try:
     from pyperclip import copy as clipboard, PyperclipException
 except ImportError:
-    pprint("[*] Error. Please install pyperclip' pkg.\n$ pip3 install pyperclip")
+    pprint("[Error]. Please install pyperclip' pkg.\n$ pip3 install pyperclip")
 
 try:
     from Crypto import Random
     from Crypto.Cipher import AES
 except ImportError as E:
-    pprint("[*] Error. Please install 'pycryptodome' pkg.\n$ pip3 install pycryptodome")
+    pprint("[Error]. Please install 'pycryptodome' pkg.\n$ pip3 install pycryptodome")
 
 def goodbye(expression: bool, cause: str='Unknown', silent: bool=False):
     if expression:
     # assert expression
         if not silent: pprint(HELP)
-        pprint(f"[*] {ERROR}. {cause}")
+        pprint(f"[{ERROR}]. {cause}")
         sys.exit()
 
 def is_file_exist(file: str) -> bool:
@@ -46,9 +46,9 @@ def exception_handler(*exceptions, cause: str='', do_this: Callable=sys.exit) ->
                 results = func(*args, **kwargs)
             except exceptions as err:
                 if cause:
-                    pprint(f"\n[*] {ERROR}. {cause}")
+                    pprint(f"\n[{ERROR}]. {cause}")
                 else:
-                    pprint(f"\n[*] {err}")
+                    pprint(f"\n[{ERROR}]. {err}")
                 do_this()
             else:
                 return results
