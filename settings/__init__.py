@@ -21,7 +21,7 @@ Intro:
     Encryption Algorithm is {ALGO}
 
 Helps:
-    [bold][red]-n --new[/red][/bold]: Get your passwd and encrypt it, then will make new [yellow]<{PASSWD_FILE}>[/yellow] in your home directory
+    [bold][red]-n --new[/red][/bold]: Enter your passwd and encrypt it, then will make new [yellow]<{PASSWD_FILE}>[/yellow] in your home directory
         $ passgit -n
     [bold][green]-a --add[/green][/bold]: Add new passwd on [yellow]<{PASSWD_FILE}>[/yellow], passgit support maximum {MAX_PASSWD} passwd to encrypt and store
         $ passgit -a
@@ -35,6 +35,6 @@ Helps:
         $ passgit -l
     [bold][dark_orange]-h --help[/dark_orange][/bold]: Show help
         $ passgit -h
-    [bold][purple]passgit -g --give <1-{MAX_PASSWD}>[/purple][/bold]: Give you your decrypted passwd by index number between 1 and {MAX_PASSWD}
-        $ passgit -g 1 // Give your the first stored passwd in [yellow]<{PASSWD_FILE}>[/yellow]
+    [bold][purple]-g --give[/purple][/bold]: Enter your decrypted passwd by index number between 1 and {MAX_PASSWD}
+        $ passgit -g <1-{MAX_PASSWD}> // Enter your passwd number
 """

@@ -14,7 +14,7 @@ ALPHA = '-[purple]alpha[/purple]'
 STABLE = '-[green]stable[/green]'
 
 __repo__ = "https://github.com/mehrdad-mixtape/Pass_Git"
-__version__ = f"v1.6.6{STABLE}"
+__version__ = f"v1.6.7{STABLE}"
 
 from packages import *
 
