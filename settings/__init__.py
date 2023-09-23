@@ -35,6 +35,8 @@ Helps:
         $ passgit -l
     [bold][dark_orange]-h --help[/dark_orange][/bold]: Show help
         $ passgit -h
+    [bold][blue]-v --version[/blue][/bold]: Show version
+        $ passgit -v
     [bold][purple]-g --give[/purple][/bold]: Enter your decrypted passwd by index number between 1 and {MAX_PASSWD}
         $ passgit -g <1-{MAX_PASSWD}> // Enter your passwd number
 """
