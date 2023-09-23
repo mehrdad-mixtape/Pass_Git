@@ -19,7 +19,7 @@ __version__ = f"v1.6.7{STABLE}"
 from packages import *
 
 BANNER = f"""
----===⬤  [blink]{PROJECT_NAME}[/blink] ⬤===---
+---===⬤  [blink]{PROJECT_NAME}[/blink] ⬤ ===---
     Version: {__version__}
     Source: {__repo__}
 """
@@ -137,15 +137,18 @@ def do_you_wanna_show_list_file() -> None:
 def do_you_wanna_help() -> None:
     pprint(HELP)
 
+@option('-v', '--version')
+def do_you_wanna_see_version() -> None:
+    pprint(BANNER)
+
 @exception_handler(KeyboardInterrupt, cause="Ctrl+C")
 @exception_handler(JSONDecodeError, cause=f"<{PASSWD_FILE}> is corrupted!")
 @exception_handler(IndexError, cause="Not enough arguments")
 @exception_handler(FileNotFoundError, cause=f"<{PASSWD_FILE}> not found! if you have backup, restore it")
 def main() -> None:
-    pprint(BANNER)
     goodbye(
         len(sys.argv) == 1,
-        cause='Not to use [bold]Switches[/bold]'
+        cause=f"A valid switch was not entered, use [bold]-h[/bold] to see the help"
     )
     for _ in option.parse(): ...
 
