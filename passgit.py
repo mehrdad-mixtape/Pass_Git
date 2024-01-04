@@ -19,7 +19,7 @@ __version__ = f"v1.6.7{STABLE}"
 from packages import *
 
 BANNER = f"""
----===⬤  [blink]{PROJECT_NAME}[/blink] ⬤ ===---
+---===❰ [blink]{PROJECT_NAME}[/blink] ❱===---
     Version: {__version__}
     Source: {__repo__}
 """
@@ -116,7 +116,6 @@ def do_you_wanna_return_passwd(index: str) -> None:
         goodbye(
             index not in map(type(index), cipher_list.keys()),
             cause=f"Passwd not found with index={index}, use -d --dump to see",
-            silent=True
         )
         cipher_passwd = cipher_list.get(index, 'null')
         aes = AESCipher(getpass.getpass('[*] (-g --give) Give me your key: '))
