@@ -29,9 +29,10 @@ try:
 except ImportError as E:
     pprint("[Error]. Please install 'pycryptodome' pkg.\n$ pip3 install pycryptodome")
 
-def goodbye(expression: bool, cause: str='Unknown', silent: bool=False):
-    # if not silent: pprint(HELP)
-    if expression: pprint(f"[{ERROR}]. {cause}"); sys.exit()
+def goodbye(expression: bool, cause: str='Unknown'):
+    if expression:
+        pprint(f"[{ERROR}]. {cause}")
+        sys.exit()
 
 def is_file_exist(file: str) -> bool:
     return file in os.listdir(f"{os.path.expanduser('~')}/")
@@ -78,17 +79,62 @@ class AESCipher(object):
         return s[:-ord(s[len(s)-1:])]
 
 class Options:
+    """
+    Argument Parser!
+    
+    1. Make option object:
+    
+        option = Option()
+    
+    2. Assign function to option object:
+    
+        - Decorate function with option object
+    
+            @option('-s')
+
+            def do_you_wanna_something_to_do():
+                ...
+            
+            @option('--switch')
+
+            def do_you_wanna_something_to_do():
+                ...
+            
+            @option('-s', '--switch')
+
+            def do_you_wanna_something_to_do():
+                ...
+            
+            @option('-s', '--switch', has_input=True, type_of_input=type)
+
+            def do_you_wanna_something_to_do(arg: type):
+                ...
+    
+        - Directly
+
+            option['- or -- switch'] = (function, has_input(True or False), type_of_input=(str, int, ...))
+
+            option['-s'] = (do_you_wanna_something_to_do)
+            
+            option['-s'] = (do_you_wanna_something_to_do, True, type)
+
+            option['--switch'] = (do_you_wanna_something_to_do)
+            
+            option['--switch'] = (do_you_wanna_something_to_do, True, type)
+    """
+
     __slots__ = "__option_list", "__option_method"
+
     def __init__(self):
         self.__option_list: List[str] = []
-        self.__option_method: Dict[str, Tuple[Callable, bool, int]] = {}
+        self.__option_method: Dict[str, Tuple[Callable[[Any], Any], bool, type]] = {}
 
     def __str__(self):
         table = Table()
         table.add_column('Switches')
         table.add_column('Methods')
         for switch, method in self.option_method.items():
-            table.add_row(switch, method.__name__)
+            table.add_row(switch, method[0].__name__)
         pprint(table)
         return '\r'
 
@@ -100,9 +146,9 @@ class Options:
         """
             switches: start with - or --.
             has_input: maybe the switches include the argument after them.
-            limit_of_args: numbers of arguments after switches and depends on has_input.
+            type_of_input: type of arguments after switch and depends on has_input.
         """
-        def __decorator__(func: Callable) -> Callable[[None], None]:
+        def __decorator__(func: Callable[[Any], Any]) -> Callable[[None], None]:
             for sw in switches:
                 goodbye(
                     sw in self.__option_method.keys(),
@@ -110,16 +156,26 @@ class Options:
                         sw, sw, self.__option_method.get(sw, (print,))[0].__name__
                     )
                 )
-                self[sw] = (func, has_input, type_of_input)
+                self.__option_method[sw] = (func, has_input, type_of_input)
+
             self.__option_list.extend(switches)
 
         return __decorator__
 
-    def __setitem__(self, key, value) -> None:
+    def __setitem__(self, key: str, value: tuple) -> None:
+        goodbye(
+            not ((not isinstance(value, tuple) or value.__len__() < 3) and callable(value[0])),
+            cause="""Bad value format.\nValid format:
+        option_obj['-s' or '--switch' or '-s --switch'] = (
+            function, # Should be Callable.
+            True or False, # If your function should get argument, set it True or not False.
+            type, # Set type of argument that will pass to function (str, int, ...).
+        )""",
+        )
         self.__option_method[key] = value
 
-    def __getitem__(self, key) -> Any:
-        return self.__option_method[key]
+    def __getitem__(self, key: str) -> Any:
+        return self.__option_method.get(key, None)
 
     def parse(self) -> Generator[Any, None, None]:
         for i, sw in enumerate(sys.argv, start=1):
@@ -160,7 +216,6 @@ class Options:
             goodbye(
                 type_of_input is None,
                 cause=f"Get type-of-arguments=({arg_input}) after [bold]{switch}[/bold]",
-                silent=True
             )
             try:
                 arg_input = type_of_input(arg_input)
@@ -168,7 +223,6 @@ class Options:
                 goodbye(
                     True,
                     cause=f"Gave bad-argument=({arg_input}) after [bold]{switch}[/bold]",
-                    silent=True
                 )
             return func(arg_input)
 
