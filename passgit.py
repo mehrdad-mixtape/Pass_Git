@@ -14,7 +14,7 @@ ALPHA = '-[purple]alpha[/purple]'
 STABLE = '-[green]stable[/green]'
 
 __repo__ = "https://github.com/mehrdad-mixtape/Pass_Git"
-__version__ = f"v1.7.2{STABLE}"
+__version__ = f"v1.7.3{STABLE}"
 
 from packages import *
 
@@ -81,7 +81,7 @@ def do_you_wanna_dump_passwd() -> None:
         table.add_column('Access [blue]Index[/blue]')
         table.add_column(f"{ALGO} Cipher")
         for k, v in ciphers.items():
-            table.add_row(f"  ❱❱ [blue]{k}[/blue] ❰❰", f"{v}")
+            table.add_row(f"  ❱❱ [blue]{k}[/blue] ❰❰", f"{v[0:20]} ...")
         pprint(table)
 
 @option('-b', '--backup')
