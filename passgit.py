@@ -9,9 +9,9 @@
 # Python Version 3.10 or higher
 # PassGit
 
-BETA = '-[red]alpha[/red]'
-ALPHA = '-[purple]alpha[/purple]'
-STABLE = '-[green]stable[/green]'
+BETA = '[red]alpha[/]'
+ALPHA = '[purple]alpha[/]'
+STABLE = '[green]stable[/]'
 
 __repo__ = "https://github.com/mehrdad-mixtape/Pass_Git"
 __version__ = f"v2.0.0-{STABLE}"
@@ -32,9 +32,9 @@ from packages.options import Options
 from packages.logger import logger
 
 BANNER = f"""
----===< [blink][dark_orange]{__project__}[/][/] >===---
-    Version: {__version__}
-    Source: {__repo__}
+    ────━━━━ [blink][gold1]{__project__}[/][/] ━━━━────
+        Version: {__version__}
+        Source: {__repo__}
 """
 
 PASSWD_FILE = ".github_passwd.json"
@@ -198,21 +198,17 @@ def do_you_wanna_show_list_file() -> None:
 
 @option(
     '-v', '--version',
-    help_description=f"passgit -v. Show version if {__project__}."
+    help_description=f"passgit -v. Show version of {__project__}."
 )
 def do_you_wanna_see_version() -> None:
     pprint(BANNER)
+    exit(0)
 
 
 @exception_handler(KeyboardInterrupt, cause="Ctrl+C")
-# @exception_handler(IndexError, cause="Not enough arguments")
 @exception_handler(JSONDecodeError, cause=f"<{PASSWD_FILE}> is corrupted!")
 @exception_handler(FileNotFoundError, cause=f"<{PASSWD_FILE}> not found! if you have backup, restore it")
 def main() -> None:
-    # goodbye(
-    #     len(sys.argv) == 1,
-    #     cause=f"A valid switch was not entered, use [bold]-h[/] to see the help"
-    # )
     for _ in option.parse(): ...
 
 
